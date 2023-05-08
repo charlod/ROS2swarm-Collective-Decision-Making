@@ -93,7 +93,9 @@ def generate_launch_description():
     elif robot_type.startswith('thymio'):
         urdf_file_name = 'thymio.urdf'
         urdf_file = os.path.join(get_package_share_directory('thymio_description'), 'urdf', urdf_file_name)
-
+    elif robot_type.startswith('tb4'):
+        urdf_file_name = 'tb4.urdf'
+        urdf_file = os.path.join(get_package_share_directory('turtlebot4_description'), 'urdf', urdf_file_name)
 
     print("robot configuration:", robot_type)
 

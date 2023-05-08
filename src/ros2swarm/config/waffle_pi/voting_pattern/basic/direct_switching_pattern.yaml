@@ -1,0 +1,7 @@
+/**:
+  ros__parameters:
+    direct_switching_choose_start_value_at_random: true
+    direct_switching_initial_value: 0
+    direct_switching_min_opinion: 0
+    direct_switching_max_opinion: 5
+    direct_switching_timer_period: 2.0

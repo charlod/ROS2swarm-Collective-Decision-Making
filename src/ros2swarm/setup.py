@@ -126,6 +126,12 @@ setup(
             'ros2swarm.voting_pattern.basic.voter_model_with_limiter_pattern:main',
             'majority_rule_pattern = '
             'ros2swarm.voting_pattern.basic.majority_rule_pattern:main',
+            'unanimity_pattern = '
+            'ros2swarm.voting_pattern.basic.unanimity_pattern:main',
+            'cross_inhibition_pattern = '
+            'ros2swarm.voting_pattern.basic.cross_inhibition_pattern:main',
+            'direct_switching_pattern = '
+            'ros2swarm.voting_pattern.basic.direct_switching_pattern:main',
         ],
     },
 )

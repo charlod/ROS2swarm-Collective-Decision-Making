@@ -1,0 +1,7 @@
+/**:
+  ros__parameters:
+    cross_inhibition_choose_start_value_at_random: true
+    cross_inhibition_initial_value: 0
+    cross_inhibition_min_opinion: 0 
+    cross_inhibition_max_opinion: 3 
+    cross_inhibition_timer_period: 5.0 

@@ -13,11 +13,11 @@ def generate_launch_description():
     ld = LaunchDescription()
     ros2_pattern_node = launch_ros.actions.Node(
         package='ros2swarm',
-        executable='majority_rule_pattern',
+        executable='direct_switching_pattern',
         namespace=robot_namespace,
         output='screen',
         parameters=[
-            PathJoinSubstitution([config_dir, 'voting_pattern', 'basic', 'majority_rule_pattern.yaml'])],
+            PathJoinSubstitution([config_dir, 'voting_pattern', 'basic', 'direct_switching_pattern.yaml'])],
         arguments=['--ros-args', '--log-level', log_level]
     )
     ld.add_action(ros2_pattern_node)
