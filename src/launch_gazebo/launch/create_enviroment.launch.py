@@ -14,7 +14,10 @@
 #    limitations under the License.
 import os
 import sys
+import threading
 import launch_ros.actions
+import threading
+import time
 
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
@@ -34,14 +37,23 @@ def generate_launch_description():
             gazebo_world = arg.split(":=")[1]
         elif arg.startswith("number_robots:="):  # The number of robots to spawn in the world
             number_robots = int(arg.split(":=")[1])
-        elif arg.startswith("pattern:="):  # The pattern executed by the robots
-            pattern = arg.split(":=")[1]
+        # elif arg.startswith("pattern:="):  # The pattern executed by the robots
+        #     pattern = arg.split(":=")[1]
         elif arg.startswith("log_level:="):  # The log level used in this execution
             log_level = arg.split(":=")[1]
         elif arg.startswith("robot:="):  # The type of robot
             robot = arg.split(":=")[1]
         elif arg.startswith("sensor_type:="):  # The type of sensor
             sensor_type = arg.split(":=")[1]
+        elif arg.startswith("execution_mode:="):  # The execution mode (sequential or continuous)
+            execution_mode = arg.split(":=")[1]
+        elif arg.startswith("exploration:="):  # The exploration pattern
+            exploration = arg.split(":=")[1]
+        # elif arg.startswith("dissemination:="):  # The dissemination pattern
+        #     dissemination = arg.split(":=")[1]
+        elif arg.startswith("opinion_switch:="):  # The opinion switch pattern
+            opinion_switch = arg.split(":=")[1]
+
         else:
             if arg not in ['/opt/ros/galactic/bin/ros2',
                            'launch',
@@ -56,15 +68,23 @@ def generate_launch_description():
     print("---------------------------------------")
     print("number of robots |", number_robots)
     print("---------------------------------------")
-    print("pattern          |", pattern)
-    print("---------------------------------------")
+    # print("pattern          |", pattern)
+    # print("---------------------------------------")
     print("log level        |", log_level)
     print("---------------------------------------")
     print("robot            |", robot)
     print("---------------------------------------")
     print("sensor_type      |", sensor_type)
     print("---------------------------------------")
-    
+    print("execution mode   |", execution_mode)
+    print("---------------------------------------")
+    print("exploration      |", exploration)
+    # print("---------------------------------------")
+    # print("dissemination    |", dissemination)
+    print("---------------------------------------")
+    print("opinion switch   |", opinion_switch)
+    print("---------------------------------------")
+
     # allows to use the same configuration files for each robot type but different mesh models
     robot_type = robot
     gazebo_flag = True
@@ -72,13 +92,13 @@ def generate_launch_description():
         robot_type = "burger"
     elif robot_type.startswith('waffle_pi'):
         robot_type = "waffle_pi"
+    elif robot_type.startswith('turtlebot4'):
+        robot_type = "turtlebot4"
     elif robot_type.startswith('thymio'):
         robot_type = "thymio"
     elif robot_type.startswith('jackal'):
         robot_type = "jackal"
         gazebo_flag = False
-    elif robot_type.startswith('tb4'):
-        robot_type = "tb4"
 
     print("robot type       |", robot_type)
     print("---------------------------------------")
@@ -130,31 +150,108 @@ def generate_launch_description():
     elif robot_type.startswith('thymio'):
         urdf_file_name = 'thymio.urdf'
         urdf_file = os.path.join(get_package_share_directory('thymio_description'), 'urdf', urdf_file_name)
-    elif robot_type.startswith('tb4'):
-        urdf_file_name = 'tb4.urdf'
-        urdf_file = os.path.join(get_package_share_directory('turtlebot4_description'), 'urdf', urdf_file_name)
+    elif robot_type.startswith('turtlebot4'):
+        urdf_file_name = 'turtlebot4.urdf'
+        urdf_file = os.path.join(get_package_share_directory('turtlebot4_description'), 'urdf/standard', urdf_file_name)
 
+    # # find out exact path of the patter launch file
+    # for i in range(number_robots):
+    #     pattern_launch_file_name = pattern + '.launch.py'
+    #     for root, dirs, files in os.walk(launch_pattern_dir):
+    #         for name in files:
+    #             if name == pattern_launch_file_name:
+    #                 pattern_path = os.path.abspath(os.path.join(root, name))
+
+    #     # add patterns
+    #     launch_patterns = IncludeLaunchDescription(
+    #         PythonLaunchDescriptionSource(
+    #             [launch_bringup_dir, '/' + 'bringup_patterns.launch.py']),
+    #         launch_arguments={'robot': robot,
+    #                           'robot_type': robot_type,
+	# 		       'sensor_type': sensor_type,
+    #                           'robot_namespace': ['robot_namespace_', str(i)],
+    #                           'pattern': pattern_path,
+    #                           'config_dir': config_dir,
+    #                           'urdf_file': urdf_file}.items(),
+
+    #     )
+    #     ld.add_action(launch_patterns)
+
+    # return ld
+
+    def delayed_launch(ld, action, delay):
+        """Function to delay the launch of an action"""
+        time.sleep(delay)
+        ld.add_action(action)
+
+    delay = 1
     # find out exact path of the patter launch file
     for i in range(number_robots):
-        pattern_launch_file_name = pattern + '.launch.py'
+        exploration_launch_file_name = exploration + '.launch.py'
+        # dissemination_launch_file_name = dissemination + '.launch.py'
+        opinion_switch_launch_file_name = opinion_switch + '.launch.py'
         for root, dirs, files in os.walk(launch_pattern_dir):
             for name in files:
-                if name == pattern_launch_file_name:
-                    pattern_path = os.path.abspath(os.path.join(root, name))
+                if name == exploration_launch_file_name:
+                    exploration_path = os.path.abspath(os.path.join(root, name))
+                # elif name == dissemination_launch_file_name:
+                #     dissemination_path = os.path.abspath(os.path.join(root, name))
+                elif name == opinion_switch_launch_file_name:
+                    opinion_switch_path = os.path.abspath(os.path.join(root, name))
 
         # add patterns
-        launch_patterns = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                [launch_bringup_dir, '/' + 'bringup_patterns.launch.py']),
-            launch_arguments={'robot': robot,
-                              'robot_type': robot_type,
-			       'sensor_type': sensor_type,
-                              'robot_namespace': ['robot_namespace_', str(i)],
-                              'pattern': pattern_path,
-                              'config_dir': config_dir,
-                              'urdf_file': urdf_file}.items(),
+        if execution_mode == 'sequential':
+            # Execute the behaviors sequentially
+            threading.Thread(target=delayed_launch, args=(ld, IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(exploration_path),
+                launch_arguments={'robot': robot,
+                                'robot_type': robot_type,
+                                'sensor_type': sensor_type,
+                                'robot_namespace': ['robot_namespace_', str(i)],
+                                'config_dir': config_dir,
+                                'urdf_file': urdf_file}.items()), 0)).start()
+            # threading.Thread(target=delayed_launch, args=(ld, IncludeLaunchDescription(
+            #     PythonLaunchDescriptionSource(dissemination_path),
+            #     launch_arguments={'robot': robot,
+            #                     'robot_type': robot_type,
+            #                     'sensor_type': sensor_type,
+            #                     'robot_namespace': ['robot_namespace_', str(i)],
+            #                     'config_dir': config_dir,
+            #                     'urdf_file': urdf_file}.items()), delay)).start()
+            threading.Thread(target=delayed_launch, args=(ld, IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(opinion_switch_path),
+                launch_arguments={'robot': robot,
+                                'robot_type': robot_type,
+                                'sensor_type': sensor_type,
+                                'robot_namespace': ['robot_namespace_', str(i)],
+                                'config_dir': config_dir,
+                                'urdf_file': urdf_file}.items()), 2*delay)).start()
 
-        )
-        ld.add_action(launch_patterns)
+        elif execution_mode == 'continuous':
+            # Execute the behaviors continuously
+            ld.add_action(IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(exploration_path),
+                launch_arguments={'robot': robot,
+                                  'robot_type': robot_type,
+                                  'sensor_type': sensor_type,
+                                  'robot_namespace': ['robot_namespace_', str(i)],
+                                  'config_dir': config_dir,
+                                  'urdf_file': urdf_file}.items()))
+            # ld.add_action(IncludeLaunchDescription(
+            #     PythonLaunchDescriptionSource(dissemination_path),
+            #     launch_arguments={'robot': robot,
+            #                       'robot_type': robot_type,
+            #                       'sensor_type': sensor_type,
+            #                       'robot_namespace': ['robot_namespace_', str(i)],
+            #                       'config_dir': config_dir,
+            #                       'urdf_file': urdf_file}.items()))
+            ld.add_action(IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(opinion_switch_path),
+                launch_arguments={'robot': robot,
+                                  'robot_type': robot_type,
+                                  'sensor_type': sensor_type,
+                                  'robot_namespace': ['robot_namespace_', str(i)],
+                                  'config_dir': config_dir,
+                                  'urdf_file': urdf_file}.items()))
 
     return ld
