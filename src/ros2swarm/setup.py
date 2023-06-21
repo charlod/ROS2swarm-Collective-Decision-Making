@@ -35,6 +35,7 @@ setup(
          glob('config/burger/movement_pattern/combined/*.yaml')),
         (os.path.join('share', package_name, 'config', 'burger', 'voting_pattern', 'basic'),
          glob('config/burger/voting_pattern/basic/*.yaml')),
+
          
         (os.path.join('share', package_name, 'config', 'waffle_pi'), glob('config/waffle_pi/*.yaml')),
         (os.path.join('share', package_name, 'config', 'waffle_pi', 'movement_pattern'),
@@ -132,6 +133,11 @@ setup(
             'ros2swarm.voting_pattern.basic.cross_inhibition_pattern:main',
             'direct_switching_pattern = '
             'ros2swarm.voting_pattern.basic.direct_switching_pattern:main',
+
+            'continuous_execution_pattern ='
+            'ros2swarm.continuous_execution_pattern:main',
+            'sequential_execution_pattern = '
+            'ros2swarm.sequential_execution_pattern:main',
         ],
     },
 )

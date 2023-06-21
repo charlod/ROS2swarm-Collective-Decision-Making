@@ -1,0 +1,7 @@
+/**:
+  ros__parameters:
+      sequential_timer_period: 0.5
+      exploration_pattern_module: 'ros2swarm.movement_pattern.basic.random_walk_pattern'
+      exploration_pattern_class: 'RandomWalkPattern'
+      opinion_switch_pattern_module: 'ros2swarm.voting_pattern.basic.voter_model_pattern'
+      opinion_switch_pattern_class: 'VoterModelPattern'
