@@ -142,6 +142,10 @@ setup(
             'ros2swarm.continuous_execution_pattern:main',
             'sequential_execution_pattern = '
             'ros2swarm.sequential_execution_pattern:main',
+
+            # decision_making_pattern.basic
+            'neighbor_finder_pattern = '
+            'ros2swarm.decision_making_pattern.basic.neighbor_finder_pattern:main',
         ],
     },
 )
