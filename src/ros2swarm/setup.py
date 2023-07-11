@@ -23,6 +23,8 @@ setup(
          glob('launch/pattern/movement_pattern/combined/*.launch.py')),
         (os.path.join('share', package_name, 'launch', 'pattern', 'voting_pattern', 'basic'),
          glob('launch/pattern/voting_pattern/basic/*.launch.py')),
+        (os.path.join('share', package_name, 'launch', 'pattern', 'decision_making_pattern', 'basic'),
+         glob('launch/pattern/decision_making_pattern/basic/*.launch.py')),
         # (os.path.join('share', package_name, 'launch', 'pattern', 'voting_pattern', 'combined'),
         #     glob('launch/pattern/voting_pattern/combined/*.launch.py')),
 
@@ -46,6 +48,8 @@ setup(
          glob('config/waffle_pi/movement_pattern/combined/*.yaml')),
         (os.path.join('share', package_name, 'config', 'waffle_pi', 'voting_pattern', 'basic'),
          glob('config/waffle_pi/voting_pattern/basic/*.yaml')),
+        (os.path.join('share', package_name, 'launch', 'pattern', 'decision_making_pattern', 'basic'),
+         glob('launch/pattern/decision_making_pattern/basic/*.yaml')),
 
         (os.path.join('share', package_name, 'config', 'jackal'), glob('config/jackal/*.yaml')),
         (os.path.join('share', package_name, 'config', 'jackal', 'movement_pattern'),
