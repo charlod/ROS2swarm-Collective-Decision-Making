@@ -1,0 +1,5 @@
+/**:
+  ros__parameters:
+    timer_period: 0.5
+    linear_speed: 0.2
+    angular_speed: 0.5

@@ -112,6 +112,10 @@ setup(
             'ros2swarm.movement_pattern.basic.magnetometer_pattern:main',
             'random_walk_pattern = '
             'ros2swarm.movement_pattern.basic.random_walk_pattern:main', 
+            'phototaxis_pattern = '
+            'ros2swarm.movement_pattern.basic.phototaxis_pattern:main',
+            'antiphototaxis_pattern = '
+            'ros2swarm.movement_pattern.basic.antiphototaxis_pattern:main',
             'minimalist_flocking_pattern = '
             'ros2swarm.movement_pattern.basic.minimalist_flocking_pattern:main',
             'rat_search_pattern = '
