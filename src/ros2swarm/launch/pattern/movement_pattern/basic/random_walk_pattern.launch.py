@@ -16,12 +16,23 @@ import launch_ros.actions
 from launch import LaunchDescription
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
+import os
+import sys
+import launch_ros.actions
+
+from launch import LaunchDescription
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from ament_index_python.packages import get_package_share_directory
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+
 
 def generate_launch_description():
     """Start the nodes required for the drive pattern."""
 
-    robot_namespace = LaunchConfiguration('robot_namespace', default='robot_namespace_default')
-    config_dir = LaunchConfiguration('config_dir', default='config_dir_default')
+    robot_namespace = LaunchConfiguration('robot_namespace', default='robot1')
+    # config_dir = LaunchConfiguration('config_dir', default='config_dir_default')
+    config_dir = os.path.join(get_package_share_directory('ros2swarm'), 'config', 'turtlebot4')
     log_level = LaunchConfiguration("log_level", default='debug')
 
     ld = LaunchDescription()

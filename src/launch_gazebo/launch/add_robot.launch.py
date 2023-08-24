@@ -24,10 +24,20 @@ from launch import LaunchDescription
 from ament_index_python.packages import get_package_share_directory
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
 
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+
+ARGUMENTS = [
+    DeclareLaunchArgument('namespace', default_value='robot_namespace_1',
+                          description='Robot namespace'),
+]
 def generate_launch_description():
     """Add turtlebot(s) to an already running gazebo simulation."""
+
+    # pkg_create3_control = os.path.join(get_package_share_directory('irobot_create_control'))
 
     for arg in sys.argv:
         if arg.startswith("start_index:="):  # The start index for the robots number
@@ -40,10 +50,12 @@ def generate_launch_description():
             log_level = arg.split(":=")[1]
         elif arg.startswith("robot:="):  # The type of robot
             robot = arg.split(":=")[1]
+        elif arg.startswith("sensor_type:="):  # The type of sensor
+            sensor_type = arg.split(":=")[1]
         elif arg.startswith("version:="):  # ROS version used
             version = int(arg.split(":=")[1])
         else:
-            if arg not in ['/opt/ros/foxy/bin/ros2',
+            if arg not in ['/opt/ros/humble/bin/ros2',
                            'launch',
                            'launch_gazebo',
                            'add_robot.launch.py']:
@@ -58,7 +70,7 @@ def generate_launch_description():
 
     ros_version = version
 
-    ld = LaunchDescription()
+    ld = LaunchDescription(ARGUMENTS)
 
     for i in (range(number_robots)):
         num = i + start_index
@@ -70,7 +82,7 @@ def generate_launch_description():
             name=['gazeboRobotNode_', str(num)],
             output='screen',
             arguments=[
-                '--robot_name', ['robot_name_', str(num)],
+                '--robot_name', ['robot_namespace_', str(num)],
                 '--robot_namespace', ['robot_namespace_', str(num)],
                 '-x', '1.0',
                 '-y', [str(i), '.0'],
@@ -78,8 +90,19 @@ def generate_launch_description():
                 '--type_of_robot', robot
             ]
         )
+        # control_launch_file2 = PathJoinSubstitution(
+        # [pkg_create3_control, 'launch', 'include', 'control2.py'])
+    
+
+        # Includes
+        # diff_drive_controller = IncludeLaunchDescription(
+        #     PythonLaunchDescriptionSource([control_launch_file2])
+        # )
+        
+        # ld.add_action(diff_drive_controller)
         ld.add_action(gazebo_node)
 
+    os.environ['LC_NUMERIC'] = 'en_US.UTF-8'
     # allows to use the same configuration files for each robot type but different mesh models
     robot_type = robot
     if robot_type.startswith('burger'):
@@ -93,15 +116,17 @@ def generate_launch_description():
     elif robot_type.startswith('thymio'):
         urdf_file_name = 'thymio.urdf'
         urdf_file = os.path.join(get_package_share_directory('thymio_description'), 'urdf', urdf_file_name)
-    elif robot_type.startswith('tb4'):
-        urdf_file_name = 'tb4.urdf'
-        urdf_file = os.path.join(get_package_share_directory('turtlebot4_description'), 'urdf', urdf_file_name)
+    elif robot_type.startswith('turtlebot4'):
+        # config_icreate_velocity_controller = PathJoinSubstitution(
+        #     [FindPackageShare('irobot_create_control'), 'config', 'control.yaml']
+        #     )
+
+        urdf_file_name = 'turtlebot4.urdf.xacro'
+        urdf_file = os.path.join(get_package_share_directory('turtlebot4_description'), 'urdf', 'standard', urdf_file_name)
 
     print("robot configuration:", robot_type)
 
     config_dir = os.path.join(get_package_share_directory('ros2swarm'), 'config', robot_type)
-
-    
 
     launch_pattern_dir = os.path.join(get_package_share_directory('ros2swarm'), 'launch', 'pattern')
     launch_bringup_dir = os.path.join(get_package_share_directory('ros2swarm'))
@@ -119,14 +144,17 @@ def generate_launch_description():
         launch_patterns = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 [launch_bringup_dir, '/' + 'bringup_patterns.launch.py']),
-            launch_arguments={'robot': robot,
+            	  launch_arguments={'robot': robot,
                               'robot_type': robot_type,
+			                  'sensor_type': sensor_type,             
                               'robot_namespace': ['robot_namespace_', str(num)],
                               'pattern': pattern_path,
                               'config_dir': config_dir,
                               'urdf_file': urdf_file,
-                              'ros_version': str(ros_version)}.items(),
-
+                              'ros_version': str(ros_version),
+                              'params_file': os.path.join(
+                                             get_package_share_directory('ros2swarm'), 'param', 'nav2_params_' + robot_type + '_namespaced.yaml')
+                                             }.items(),
         )
         ld.add_action(launch_patterns)
 

@@ -1,0 +1,16 @@
+*.cmake
+*.json
+*.stamp
+*.so
+/build
+/install/launch_gazebo
+*.log
+*.pyc
+*.h
+*.hpp
+*/install/
+*/build/
+src/turtlebot4_ws/install/
+src/turtlebot4_ws/build
+src/turtlebot4_ws/log
+install

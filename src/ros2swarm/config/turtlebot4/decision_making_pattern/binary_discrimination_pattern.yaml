@@ -1,0 +1,4 @@
+/**:
+  ros__parameters:
+    binary_discrimination_initial_opinion: 'a'
+    binary_discrimination_timer_period: 0.0

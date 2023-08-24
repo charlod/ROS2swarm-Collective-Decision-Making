@@ -26,7 +26,10 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-                    'add_bot_node = launch_gazebo.add_bot_node:main'
+                    'add_bot_node = launch_gazebo.add_bot_node:main',
+                    'add_bot_node_1 = launch_gazebo.add_bot_node_1:main',
+                    'add_bot_node_2 = launch_gazebo.add_bot_node_2:main',
+
         ],
     },
 )

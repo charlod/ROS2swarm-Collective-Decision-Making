@@ -17,13 +17,13 @@ colcon build --symlink-install &&
  ROS_DOMAIN_ID=42 ros2 launch ros2swarm bringup_robot.launch.py \
  pattern:=dispersion_pattern \
  log_level:=info \
- robot:=waffle_pi \
- sensor_type:=lidar \
- robot_number:=NUM_CHANGE_ME
+ robot:=turtlebot4 \
+ sensor_type:=ir \
+ robot_number:=1
 
 # pattern_name:
 ## movement pattern: drive_pattern | dispersion_pattern | aggregation_pattern | flocking_pattern | flocking_pattern2 | attraction_pattern | attraction_pattern2 | magnetometer_pattern | minimalist_flocking_pattern | discussed_dispersion_pattern | beeclust_pattern
-## voting_pattern: voter_model_pattern | voter_model_with_limiter_pattern | majority_rule_pattern
+## voting_pattern: voter_model_pattern | voter_model_with_limiter_pattern | majority_rule_pattern | unanimity_pattern | cross_inhibition_pattern | direct_switching_pattern
 # robot_nummer: num_robots
 # robot: waffle_pi | burger | jackal | thymio
 # sensor_type: lidar | ir | ir_tf 

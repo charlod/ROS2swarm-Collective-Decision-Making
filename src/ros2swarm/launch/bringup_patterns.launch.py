@@ -13,6 +13,16 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+from ament_index_python.packages import get_package_share_directory
+
+import os
+
+from launch.substitutions.launch_configuration import LaunchConfiguration
+
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.conditions import IfCondition, LaunchConfigurationEquals, LaunchConfigurationNotEquals
+
 import launch_ros.actions
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
@@ -25,25 +35,28 @@ def generate_launch_description():
 
     config_dir = LaunchConfiguration('config_dir', default='config_dir_default')
     urdf_file = LaunchConfiguration('urdf_file', default='urdf_file_default')
-    robot_namespace = LaunchConfiguration('robot_namespace', default='robot_namespace_default')
-    pattern = LaunchConfiguration('pattern', default='pattern_default')
+    robot_namespace = LaunchConfiguration('robot_namespace', default='robot1')
+    pattern = LaunchConfiguration('pattern', default='random_walk')
     log_level = LaunchConfiguration('log_level', default='debug')
     robot = LaunchConfiguration('robot', default='robot_default')
-    robot_type = LaunchConfiguration('robot_type', default='robot_type_default')
+    robot_type = LaunchConfiguration('robot_type', default='turtlebot4')
     sensor_type = LaunchConfiguration('sensor_type', default='sensor_type_default')
     use_sim_time = LaunchConfiguration('use_sim_time', default='True')
 
+    config_dir = os.path.join(get_package_share_directory('ros2swarm'), 'config', 'turtlebot4')
+
+
     ld = LaunchDescription()
-    # Add sensor layer
-    ros2_sensor_layer_node = launch_ros.actions.Node(
-        package='ros2swarm',
-        executable=[sensor_type,'_layer'],
-        namespace=robot_namespace,
-        output='screen',
-        parameters=[PathJoinSubstitution([config_dir, 'sensor_specification' + '.yaml'])],
-        arguments=['--ros-args', '--log-level', log_level]
-    )
-    ld.add_action(ros2_sensor_layer_node)
+    # # Add sensor layer
+    # ros2_sensor_layer_node = launch_ros.actions.Node(
+    #     package='ros2swarm',
+    #     executable=[sensor_type,'_layer'],
+    #     namespace=robot_namespace,
+    #     output='screen',
+    #     parameters=[PathJoinSubstitution([config_dir, 'sensor_specification' + '.yaml'])],
+    #     arguments=['--ros-args', '--log-level', log_level]
+    # )
+    # ld.add_action(ros2_sensor_layer_node)
 
     # Add Hardware protection layer
     ros2_hardware_protection_layer_node = launch_ros.actions.Node(
@@ -67,17 +80,17 @@ def generate_launch_description():
     )
     ld.add_action(launch_pattern)
 
-    # add state publisher
-    robot_state_publisher = launch_ros.actions.Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        namespace=robot_namespace,
-        output='screen',
-        parameters=[{'use_sim_time': use_sim_time
-                     ,#'robot_description': Command(['xacro ', urdf_file])}],
-                     }],
-        arguments=[urdf_file, '--ros-args', '--log-level', 'warn']
-    )
-    ld.add_action(robot_state_publisher)
+    # # add state publisher
+    # robot_state_publisher = launch_ros.actions.Node(
+    #     package='robot_state_publisher',
+    #     executable='robot_state_publisher',
+    #     namespace=robot_namespace,
+    #     output='screen',
+    #     parameters=[{'use_sim_time': use_sim_time
+    #                  ,#'robot_description': Command(['xacro ', urdf_file])}],
+    #                  }],
+    #     arguments=[urdf_file, '--ros-args', '--log-level', 'warn']
+    # )
+    # ld.add_action(robot_state_publisher)
 
     return ld

@@ -80,7 +80,9 @@ def generate_launch_description():
     elif robot_type.startswith('jackal'):
         robot_type = "jackal"
         robot_node = False
-
+    elif robot_type.startswith('turtlebot4'):
+        robot_type = "turtlebot4"
+        
     ld = LaunchDescription()
 
     # Add the log level argument to the launch description

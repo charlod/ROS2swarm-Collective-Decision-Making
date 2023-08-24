@@ -66,6 +66,21 @@ class HardwareProtectionLayer(AbstractPattern):
         self.publisher_cmd_vel = self.create_publisher(Twist,
                                                        self.get_namespace() + '/cmd_vel',
                                                        10)
+        
+
+        # self.publisher_cmd_vel_unstampted = self.create_publisher(Twist,
+        #                                                self.get_namespace() + '/diff_drive_controller/cmd_vel_unstamped',
+        #                                                10)
+        
+        # self.control_subscription = self.create_subscription(
+        #     Twist,
+        #     self.get_namespace() + '/gazebo_ros2_control',
+        #     self.swarm_command_controlled(self.command_callback),
+        #     10)
+        
+        for i in range(2):
+            print("here")
+            break
 
         self.param_max_range = float(self.get_parameter(
             "hardware_protection_layer_max_range").get_parameter_value().double_value)

@@ -1,0 +1,330 @@
+.
+├── communication_interfaces
+│   ├── CMakeLists.txt
+│   ├── msg
+│   │   ├── DoubleMessage.msg
+│   │   ├── FloatArray.msg
+│   │   ├── Int8Message.msg
+│   │   ├── OpinionMACMessage.msg
+│   │   ├── OpinionMessage.msg
+│   │   ├── RangeData.msg
+│   │   └── StringMessage.msg
+│   └── package.xml
+├── __init__.py
+├── launch_gazebo
+│   ├── launch
+│   │   ├── add_robot.launch.py
+│   │   ├── create_enviroment.launch.py
+│   │   └── start_gazebo.launch.py
+│   ├── launch_gazebo
+│   │   ├── add_bot_node.py
+│   │   ├── __init__.py
+│   │   └── __pycache__
+│   │       ├── add_bot_node.cpython-38.pyc
+│   │       └── __init__.cpython-38.pyc
+│   ├── objects
+│   │   ├── blue_goal
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── goal_marker
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── MazeWall
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── MazeWallOuter
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── red_goal
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── T
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── T1
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── T1_7short
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── T2
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── T3
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── T_camber
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── T_camber_mod
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── T_maze
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── T_maze_0
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── T_maze_right
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   ├── Y
+│   │   │   ├── model.config
+│   │   │   └── model.sdf
+│   │   └── Y2
+│   │       └── model.config
+│   ├── package.xml
+│   ├── resource
+│   │   └── launch_gazebo
+│   ├── setup.cfg
+│   ├── setup.py
+│   ├── test
+│   │   ├── test_copyright.py
+│   │   ├── test_flake8.py
+│   │   └── test_pep257.py
+│   └── worlds
+│       ├── 560x540m.world
+│       ├── arena_large.world
+│       ├── arena.world
+│       ├── empty.world
+│       ├── turtle.world
+│       ├── Ymaze_camber_extended2.world
+│       ├── Ymaze_camber_extended.world
+│       ├── Ymaze_camber_top_goal10.world
+│       ├── Ymaze_camber_top_goal13.world
+│       ├── Ymaze_camber_top_goal16.world
+│       ├── Ymaze_camber_top_goal1.world
+│       ├── Ymaze_camber_top_goal4.world
+│       ├── Ymaze_camber_top.world
+│       ├── Ymaze_camber.world
+│       ├── Ymaze.world
+│       └── Y.world
+├── ros2swarm
+│   ├── config
+│   │   ├── burger
+│   │   │   ├── hardware_protection_layer.yaml
+│   │   │   ├── movement_pattern
+│   │   │   │   ├── basic
+│   │   │   │   │   ├── aggregation_pattern.yaml
+│   │   │   │   │   ├── attraction_pattern2.yaml
+│   │   │   │   │   ├── attraction_pattern.yaml
+│   │   │   │   │   ├── dispersion_pattern.yaml
+│   │   │   │   │   ├── drive_pattern.yaml
+│   │   │   │   │   ├── magnetometer_pattern.yaml
+│   │   │   │   │   ├── minimalist_flocking_pattern.yaml
+│   │   │   │   │   ├── random_walk_pattern.yaml
+│   │   │   │   │   └── rat_search_pattern.yaml
+│   │   │   │   └── combined
+│   │   │   │       └── discussed_dispersion_pattern.yaml
+│   │   │   ├── sensor_specification.yaml
+│   │   │   └── voting_pattern
+│   │   │       └── basic
+│   │   │           ├── majority_rule_pattern.yaml
+│   │   │           ├── voter_model_pattern.yaml
+│   │   │           └── voter_model_with_limiter_pattern.yaml
+│   │   ├── CONFIG.md
+│   │   ├── jackal
+│   │   │   ├── hardware_protection_layer.yaml
+│   │   │   ├── movement_pattern
+│   │   │   │   ├── basic
+│   │   │   │   │   ├── aggregation_pattern.yaml
+│   │   │   │   │   ├── attraction_pattern2.yaml
+│   │   │   │   │   ├── attraction_pattern.yaml
+│   │   │   │   │   ├── dispersion_pattern.yaml
+│   │   │   │   │   ├── drive_pattern.yaml
+│   │   │   │   │   ├── magnetometer_pattern.yaml
+│   │   │   │   │   ├── minimalist_flocking_pattern.yaml
+│   │   │   │   │   ├── random_walk_pattern.yaml
+│   │   │   │   │   └── rat_search_pattern.yaml
+│   │   │   │   └── combined
+│   │   │   │       └── discussed_dispersion_pattern.yaml
+│   │   │   └── voting_pattern
+│   │   │       └── basic
+│   │   │           ├── majority_rule_pattern.yaml
+│   │   │           ├── voter_model_pattern.yaml
+│   │   │           └── voter_model_with_limiter_pattern.yaml
+│   │   ├── thymio
+│   │   │   ├── hardware_protection_layer.yaml
+│   │   │   ├── movement_pattern
+│   │   │   │   ├── basic
+│   │   │   │   │   ├── aggregation_pattern.yaml
+│   │   │   │   │   ├── attraction_pattern2.yaml
+│   │   │   │   │   ├── attraction_pattern.yaml
+│   │   │   │   │   ├── beeclust_pattern.yaml
+│   │   │   │   │   ├── dispersion_pattern.yaml
+│   │   │   │   │   ├── drive_pattern.yaml
+│   │   │   │   │   ├── line_avoidance_pattern.yaml
+│   │   │   │   │   ├── magnetometer_pattern.yaml
+│   │   │   │   │   ├── minimalist_flocking_pattern.yaml
+│   │   │   │   │   ├── random_walk_pattern.yaml
+│   │   │   │   │   └── rat_search_pattern.yaml
+│   │   │   │   └── combined
+│   │   │   │       ├── discussed_dispersion_pattern.yaml
+│   │   │   │       ├── flocking_pattern2.yaml
+│   │   │   │       └── flocking_pattern.yaml
+│   │   │   ├── sensor_specification.yaml
+│   │   │   └── voting_pattern
+│   │   │       └── basic
+│   │   │           ├── majority_rule_pattern.yaml
+│   │   │           ├── voter_model_pattern.yaml
+│   │   │           └── voter_model_with_limiter_pattern.yaml
+│   │   └── waffle_pi
+│   │       ├── hardware_protection_layer.yaml
+│   │       ├── movement_pattern
+│   │       │   ├── basic
+│   │       │   │   ├── aggregation_pattern.yaml
+│   │       │   │   ├── attraction_pattern2.yaml
+│   │       │   │   ├── attraction_pattern.yaml
+│   │       │   │   ├── dispersion_pattern.yaml
+│   │       │   │   ├── drive_pattern.yaml
+│   │       │   │   ├── magnetometer_pattern.yaml
+│   │       │   │   ├── minimalist_flocking_pattern.yaml
+│   │       │   │   ├── random_walk_pattern.yaml
+│   │       │   │   └── rat_search_pattern.yaml
+│   │       │   └── combined
+│   │       │       └── discussed_dispersion_pattern.yaml
+│   │       ├── sensor_specification.yaml
+│   │       └── voting_pattern
+│   │           └── basic
+│   │               ├── cross_inhibition_pattern.yaml
+│   │               ├── direct_switching_pattern.yaml
+│   │               ├── majority_rule_pattern.yaml
+│   │               ├── unanimity_pattern.yaml
+│   │               ├── voter_model_pattern.yaml
+│   │               └── voter_model_with_limiter_pattern.yaml
+│   ├── __init__.py
+│   ├── launch
+│   │   ├── bringup_patterns.launch.py
+│   │   ├── bringup_robot.launch.py
+│   │   ├── hlds_laser.launch.py
+│   │   ├── __init__.py
+│   │   ├── pattern
+│   │   │   ├── __init__.py
+│   │   │   ├── movement_pattern
+│   │   │   │   ├── basic
+│   │   │   │   │   ├── aggregation_pattern.launch.py
+│   │   │   │   │   ├── attraction_pattern2.launch.py
+│   │   │   │   │   ├── attraction_pattern.launch.py
+│   │   │   │   │   ├── dispersion_pattern.launch.py
+│   │   │   │   │   ├── drive_pattern.launch.py
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── magnetometer_pattern.launch.py
+│   │   │   │   │   ├── minimalist_flocking_pattern.launch.py
+│   │   │   │   │   ├── random_walk_pattern.launch.py
+│   │   │   │   │   └── rat_search_pattern.launch.py
+│   │   │   │   ├── combined
+│   │   │   │   │   ├── discussed_dispersion_pattern.launch.py
+│   │   │   │   │   └── __init__.py
+│   │   │   │   └── __init__.py
+│   │   │   └── voting_pattern
+│   │   │       ├── basic
+│   │   │       │   ├── cross_inhibition_pattern.launch.py
+│   │   │       │   ├── direct_switching_pattern.launch.py
+│   │   │       │   ├── __init__.py
+│   │   │       │   ├── majority_rule_pattern.launch.py
+│   │   │       │   ├── unanimity_pattern.launch.py
+│   │   │       │   ├── voter_model_pattern.launch.py
+│   │   │       │   └── voter_model_with_limiter_pattern.launch.py
+│   │   │       └── __init__.py
+│   │   ├── turtlebot3_bringup.launch.py
+│   │   └── turtlebot3_state_publisher.launch.py
+│   ├── package.xml
+│   ├── param
+│   │   ├── burger.yaml
+│   │   └── waffle_pi.yaml
+│   ├── resource
+│   │   └── ros2swarm
+│   ├── ros2swarm
+│   │   ├── abstract_pattern.py
+│   │   ├── continuous_execution.py
+│   │   ├── decision_making.py
+│   │   ├── hardware_protection_layer.py
+│   │   ├── __init__.py
+│   │   ├── movement_pattern
+│   │   │   ├── basic
+│   │   │   │   ├── aggregation_pattern.py
+│   │   │   │   ├── attraction_pattern2.py
+│   │   │   │   ├── attraction_pattern.py
+│   │   │   │   ├── dispersion_pattern.py
+│   │   │   │   ├── drive_pattern.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── magnetometer_pattern.py
+│   │   │   │   ├── minimalist_flocking_pattern.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── dispersion_pattern.cpython-38.pyc
+│   │   │   │   │   ├── drive_pattern.cpython-38.pyc
+│   │   │   │   │   ├── __init__.cpython-38.pyc
+│   │   │   │   │   └── random_walk_pattern.cpython-38.pyc
+│   │   │   │   ├── random_walk_pattern.py
+│   │   │   │   └── rat_search_pattern.py
+│   │   │   ├── combined
+│   │   │   │   ├── discussed_dispersion_pattern.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── discussed_dispersion_pattern.cpython-38.pyc
+│   │   │   │       └── __init__.cpython-38.pyc
+│   │   │   ├── __init__.py
+│   │   │   ├── movement_pattern.py
+│   │   │   └── __pycache__
+│   │   │       ├── __init__.cpython-38.pyc
+│   │   │       └── movement_pattern.cpython-38.pyc
+│   │   ├── __pycache__
+│   │   │   ├── abstract_pattern.cpython-38.pyc
+│   │   │   ├── hardware_protection_layer.cpython-38.pyc
+│   │   │   └── __init__.cpython-38.pyc
+│   │   ├── sensor_layer
+│   │   │   ├── __init__.py
+│   │   │   ├── ir_layer.py
+│   │   │   ├── ir_tf_layer.py
+│   │   │   ├── lidar_layer.py
+│   │   │   └── __pycache__
+│   │   │       ├── __init__.cpython-38.pyc
+│   │   │       └── lidar_layer.cpython-38.pyc
+│   │   ├── sequential_execution.py
+│   │   ├── utils
+│   │   │   ├── __init__.py
+│   │   │   ├── maze_graph.py
+│   │   │   ├── __pycache__
+│   │   │   │   ├── __init__.cpython-38.pyc
+│   │   │   │   ├── scan_calculation_functions.cpython-38.pyc
+│   │   │   │   ├── setup_node.cpython-38.pyc
+│   │   │   │   ├── swarm_controll.cpython-38.pyc
+│   │   │   │   └── vote_list.cpython-38.pyc
+│   │   │   ├── scan_calculation_functions.py
+│   │   │   ├── setup_node.py
+│   │   │   ├── state.py
+│   │   │   ├── swarm_controll.py
+│   │   │   ├── vote_list.py
+│   │   │   └── wifi_functions.py
+│   │   └── voting_pattern
+│   │       ├── basic
+│   │       │   ├── cross_inhibition_pattern.py
+│   │       │   ├── direct_switching_pattern.py
+│   │       │   ├── __init__.py
+│   │       │   ├── majority_rule_pattern.py
+│   │       │   ├── __pycache__
+│   │       │   │   ├── __init__.cpython-38.pyc
+│   │       │   │   ├── majority_rule_pattern.cpython-38.pyc
+│   │       │   │   ├── unanimity_pattern.cpython-38.pyc
+│   │       │   │   └── voter_model_pattern.cpython-38.pyc
+│   │       │   ├── unanimity_pattern.py
+│   │       │   ├── voter_model_pattern.py
+│   │       │   └── voter_model_with_limiter_pattern.py
+│   │       ├── __init__.py
+│   │       ├── __pycache__
+│   │       │   ├── __init__.cpython-38.pyc
+│   │       │   └── voting_pattern.cpython-38.pyc
+│   │       └── voting_pattern.py
+│   ├── setup.cfg
+│   ├── setup.py
+│   ├── test
+│   │   ├── test_copyright.py
+│   │   ├── test_drive_pattern.py
+│   │   ├── test_flake8.py
+│   │   ├── test_pep257.py
+│   │   ├── test_scan_calculation_functions.py
+│   │   └── test_vote_list.py
+│   └── test.py
+└── tree.txt
+
+79 directories, 248 files

@@ -23,8 +23,11 @@ Script used to spawn a robot in a generic position
 import os
 import rclpy
 import argparse
+import xacro
 from ament_index_python.packages import get_package_share_directory
 from gazebo_msgs.srv import SpawnEntity
+import xml.etree.ElementTree as ET
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
 
 def main():
@@ -70,27 +73,53 @@ def main():
             get_package_share_directory("turtlebot3_gazebo"), "models",
             "turtlebot3_"+args.type_of_robot,
             "model.sdf")
+        robot_description = open(sdf_file_path, 'r').read()
     elif args.type_of_robot == "thymio":
         sdf_file_path = os.path.join(
             get_package_share_directory("thymio_description"), "urdf",
             "thymio.sdf")
+        robot_description = open(sdf_file_path, 'r').read()
+    elif args.type_of_robot == "turtlebot4":
+        sdf_file_path = os.path.join(
+            get_package_share_directory("turtlebot4_description"), "urdf", 'standard',
+            "turtlebot4.urdf.xacro")
+        xml = xacro.process_file(sdf_file_path, mappings={"namespace": args.robot_namespace})
+        robot_description = xml.toprettyxml(indent='  ')
 
-    print("sdf_file_path: ", sdf_file_path)
+
+
+    # if args.type_of_robot != "thymio":
+    #     # remapping tf topic 
+    #     root = ET.fromstring(robot_description)
+    #     for plugin in root.iter('plugin'):
+    #         ros_params = plugin.find('ros')
+
+    #         if ros_params is not None:
+    #             ros_tf_remap = ET.SubElement(ros_params, 'remapping')
+    #             ros_tf_remap.text = '/tf:=/' + args.robot_namespace + '/tf'
+    #         else:
+    #             print(plugin.attrib)
+    #             print("'ros' element not found in the plugin")
+
+    #     robot_description = ET.tostring(root, encoding='unicode')
+
 
     node.get_logger().debug('spawning `{}` on namespace `{}` at {}, {}, {}'.format(
         args.robot_name, args.robot_namespace, args.x, args.y, args.z))
 
     request = SpawnEntity.Request()
     request.name = args.robot_name
-    request.xml = open(sdf_file_path, 'r').read()
+    request.xml = robot_description
     request.robot_namespace = args.robot_namespace
     request.initial_pose.position.x = float(args.x)
     request.initial_pose.position.y = float(args.y)
     request.initial_pose.position.z = float(args.z)
 
+
     node.get_logger().debug("Sending service request to `/spawn_entity`")
     future = client.call_async(request)
     rclpy.spin_until_future_complete(node, future)
+
     if future.result() is not None:
         print('response: %r' % future.result())
     else:

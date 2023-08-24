@@ -1,155 +1,99 @@
-#!/usr/bin/env python3
-#    Copyright 2020 Marian Begemann
-#
-#    Licensed under the Apache License, Version 2.0 (the "License");
-#    you may not use this file except in compliance with the License.
-#    You may obtain a copy of the License at
-#
-#        http://www.apache.org/licenses/LICENSE-2.0
-#
-#    Unless required by applicable law or agreed to in writing, software
-#    distributed under the License is distributed on an "AS IS" BASIS,
-#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#    See the License for the specific language governing permissions and
-#    limitations under the License.
-import os
-import sys
-import launch_ros.actions
+from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument
+from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from ament_index_python.packages import get_package_share_directory
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+import sys
+import os
+
+
+ARGUMENTS = [
+    DeclareLaunchArgument('namespace', default_value='robot1',
+                          description='Robot namespace'),
+    DeclareLaunchArgument('rviz', default_value='false',
+                          choices=['true', 'false'], description='Start rviz.'),
+    DeclareLaunchArgument('world', default_value='warehouse',
+                          description='Ignition World'),
+    DeclareLaunchArgument('model', default_value='standard',
+                          choices=['standard', 'lite'],
+                          description='Turtlebot4 Model'),
+
+
+]
+
+for pose_element in ['x', 'y', 'z', 'yaw']:
+    ARGUMENTS.append(DeclareLaunchArgument(pose_element, default_value='0.0',
+                     description=f'{pose_element} component of the robot pose.'))
 
 
 def generate_launch_description():
-    """Creates the environment with gazebo, add robots and starts their behaviour"""
+    # Directories
+    pkg_turtlebot4_ignition_bringup = get_package_share_directory(
+        'turtlebot4_ignition_bringup')
 
-    launch_file_dir = os.path.join(get_package_share_directory('launch_gazebo'))
-    launch_pattern_dir = os.path.join(get_package_share_directory('ros2swarm'), 'launch', 'pattern')
+    # Paths
+    ignition_launch = PathJoinSubstitution(
+        [pkg_turtlebot4_ignition_bringup, 'launch', 'ignition.launch.py'])
+    robot_spawn_launch = PathJoinSubstitution(
+        [pkg_turtlebot4_ignition_bringup, 'launch', 'turtlebot4_spawn.launch.py'])
     launch_bringup_dir = os.path.join(get_package_share_directory('ros2swarm'))
 
-    for arg in sys.argv:
-        if arg.startswith("gazebo_world:="):  # Name of the gazebo world
-            gazebo_world = arg.split(":=")[1]
-        elif arg.startswith("number_robots:="):  # The number of robots to spawn in the world
-            number_robots = int(arg.split(":=")[1])
-        elif arg.startswith("pattern:="):  # The pattern executed by the robots
-            pattern = arg.split(":=")[1]
-        elif arg.startswith("log_level:="):  # The log level used in this execution
-            log_level = arg.split(":=")[1]
-        elif arg.startswith("robot:="):  # The type of robot
-            robot = arg.split(":=")[1]
-        elif arg.startswith("sensor_type:="):  # The type of sensor
-            sensor_type = arg.split(":=")[1]
-        else:
-            if arg not in ['/opt/ros/galactic/bin/ros2',
-                           'launch',
-                           'launch_gazebo',
-                           'create_enviroment.launch.py']:
-                print("Argument not known: '", arg, "'")
+    ignition = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([ignition_launch]),
+        launch_arguments=[
+            ('world', LaunchConfiguration('world'))
+        ]
+    )
 
-    world_file_name = gazebo_world
+    # for arg in sys.argv:
+    #     if arg.startswith("pattern:="):  # The pattern executed by the robots
+    #         pattern = arg.split(":=")[1]
 
     print("---------------------------------------")
-    print("world file name  |", world_file_name)
-    print("---------------------------------------")
-    print("number of robots |", number_robots)
-    print("---------------------------------------")
-    print("pattern          |", pattern)
-    print("---------------------------------------")
-    print("log level        |", log_level)
-    print("---------------------------------------")
-    print("robot            |", robot)
-    print("---------------------------------------")
-    print("sensor_type      |", sensor_type)
-    print("---------------------------------------")
-    
-    # allows to use the same configuration files for each robot type but different mesh models
-    robot_type = robot
-    gazebo_flag = True
-    if robot_type.startswith('burger'):
-        robot_type = "burger"
-    elif robot_type.startswith('waffle_pi'):
-        robot_type = "waffle_pi"
-    elif robot_type.startswith('thymio'):
-        robot_type = "thymio"
-    elif robot_type.startswith('jackal'):
-        robot_type = "jackal"
-        gazebo_flag = False
-
-    print("robot type       |", robot_type)
+    print("pattern          |", LaunchConfiguration('pattern'))
     print("---------------------------------------")
 
-    ld = LaunchDescription()
 
-    # Add the log level argument to the launch description
-    log = LaunchDescription([
-        DeclareLaunchArgument(
-            "log_level",
-            default_value=log_level,
-            description="Logging level",
-        )
-    ])
-    ld.add_action(log)
+    robot_spawn = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([robot_spawn_launch]),
+        launch_arguments=[
+            ('namespace', LaunchConfiguration('namespace')),
+            ('rviz', LaunchConfiguration('rviz')),
+            ('x', LaunchConfiguration('x')),
+            ('y', LaunchConfiguration('y')),
+            ('z', LaunchConfiguration('z')),
+            ('yaw', LaunchConfiguration('yaw'))]
+    )
 
-    if gazebo_flag:
-        # Add gazebo start script
-        gazebo_start = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([launch_file_dir, '/start_gazebo.launch.py']),
-            launch_arguments={'world_name': world_file_name}.items(),
-        )
-        ld.add_action(gazebo_start)
+    launch_pattern_dir = os.path.join(get_package_share_directory('ros2swarm'), 'launch', 'pattern')
 
-        for i in range(number_robots):
-            # add gazebo node
-            gazebo_node = launch_ros.actions.Node(
-                package='launch_gazebo',
-                executable='add_bot_node',
-                namespace=['namespace_', str(i)],
-                name=['gazeboRobotNode_', str(i)],
-                output='screen',
-                arguments=[
-                    '--robot_name', ['robot_name_', str(i)],
-                    '--robot_namespace', ['robot_namespace_', str(i)],
-                    '-x', '0.0',
-                    '-y', [str(i), '.0'],
-                    '-z', '0.1',
-                    '--type_of_robot', robot
-                ]
-            )
-            ld.add_action(gazebo_node)
+    # find out exact path of the pattern launch file
+    pattern_launch_file_name = 'random_walk_pattern' + '.launch.py'
+    for root, dirs, files in os.walk(launch_pattern_dir):
+        for name in files:
+            if name == pattern_launch_file_name:
+                pattern_path = os.path.abspath(os.path.join(root, name))
 
-    config_dir = os.path.join(get_package_share_directory('ros2swarm'), 'config', robot_type)
+    # add patterns
+    launch_patterns = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [launch_bringup_dir, '/' + 'bringup_patterns.launch.py']),
+        launch_arguments={'robot': 'tb4',
+                            'robot_namespace': LaunchConfiguration('namespace'),
+                            'pattern': pattern_path
+                        #   'params_file': os.path.join(
+                                    # get_package_share_directory('ros2swarm'), 'param', 'nav2_params_' + robot_type + '_namespaced.yaml')
+                        }.items()
 
-    if robot_type.startswith('burger') or robot_type.startswith('waffle_pi'):
-        urdf_file_name = 'turtlebot3_' + robot + '.urdf'
-        urdf_file = os.path.join(get_package_share_directory('turtlebot3_description'), 'urdf', urdf_file_name)
-    elif robot_type.startswith('thymio'):
-        urdf_file_name = 'thymio.urdf'
-        urdf_file = os.path.join(get_package_share_directory('thymio_description'), 'urdf', urdf_file_name)
+    )
+    # Create launch description and add actions
+    ld = LaunchDescription(ARGUMENTS)
+    ld.add_action(ignition)
+    ld.add_action(robot_spawn)
+    ld.add_action(launch_patterns)
 
-    # find out exact path of the patter launch file
-    for i in range(number_robots):
-        pattern_launch_file_name = pattern + '.launch.py'
-        for root, dirs, files in os.walk(launch_pattern_dir):
-            for name in files:
-                if name == pattern_launch_file_name:
-                    pattern_path = os.path.abspath(os.path.join(root, name))
-
-        # add patterns
-        launch_patterns = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                [launch_bringup_dir, '/' + 'bringup_patterns.launch.py']),
-            launch_arguments={'robot': robot,
-                              'robot_type': robot_type,
-			       'sensor_type': sensor_type,
-                              'robot_namespace': ['robot_namespace_', str(i)],
-                              'pattern': pattern_path,
-                              'config_dir': config_dir,
-                              'urdf_file': urdf_file}.items(),
-
-        )
-        ld.add_action(launch_patterns)
+    # ld.add_action(launch_patterns)
 
     return ld

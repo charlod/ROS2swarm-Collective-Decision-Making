@@ -1,0 +1,8 @@
+/**:
+  ros__parameters:
+    unanimity_choose_start_value_at_random: true
+    unanimity_initial_value: 0
+    unanimity_k: 5
+    unanimity_min_opinion: 0
+    unanimity_max_opinion: 3
+    unanimity_timer_period: 5.0 
